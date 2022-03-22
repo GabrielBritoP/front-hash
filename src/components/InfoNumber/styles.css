@@ -1,0 +1,28 @@
+.info-number-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* border: 1px solid #1d1d1d; */
+  padding: 1rem 4rem;
+  border-radius: 5rem;
+  margin: 1rem 0.5rem;
+  flex: 0.5 1 400px;
+  box-shadow: 0 0 10px 0px #7b7b7b;
+  background-color: #3A3845;
+  color:#F0E9D2;
+}
+
+.info-number-container span {
+  text-align: center;
+}
+
+.info-number-container .info-title {
+  font-size: 1.5rem;
+}
+
+.info-number-container .info-number {
+  font-size: 3rem;
+  letter-spacing: 0.5rem;
+  font-weight: 800;
+  line-height: 5rem;
+}

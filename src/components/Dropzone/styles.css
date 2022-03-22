@@ -1,0 +1,39 @@
+.dropzone {
+  background-color: #3a3845;
+  color: #f0e9d2;
+  cursor: pointer;
+  border-bottom: 4px solid rgba(29, 29, 29, 0.3);
+  border-radius: 20px 20px 0 0;
+  padding: 2rem;
+  transition: 0.3s ease all;
+}
+
+.dropzone:hover {
+  /* box-shadow: inset 0px 0px 0px 2px #fafafa; */
+  background-color: rgba(29, 29, 29, 0.9);
+
+  color: #fafafa;
+  /* border-bottom: 4px solid #fafafa; */
+
+  transition: 0.3s ease all;
+}
+
+.dropzone p {
+  text-align: center;
+}
+
+.dropzone-advice {
+  font-size: 2rem;
+}
+
+.dropzone-observation {
+  color: rgb(200, 200, 200);
+  margin-top: 0.3rem;
+  font-size: 1rem;
+  letter-spacing: 0.2rem;
+}
+
+.dropzone:hover .dropzone-observation {
+  color: rgb(200, 200, 200);
+  transition: 0.5s ease all;
+}
