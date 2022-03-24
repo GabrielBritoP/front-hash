@@ -12,10 +12,10 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 function App() {
   const [pageSize, setPageSize] = useState(0);
-  const [searchReg, setSearchReg] = useState("");
+  const [query, setquery] = useState("");
   const [bucketSize, setBucketSize] = useState(0);
-  const [file,setFile] = useState();
-  const formData = new FormData();  
+  const [file, setFile] = useState();
+  const formData = new FormData();
   const [info, setInfo] = useState({
     readSize: 0,
     pageSize: 0,
@@ -25,6 +25,8 @@ function App() {
     cost: 0,
     bucketNumber: 0,
   });
+
+  useEffect(() => {}, []);
 
   const onChangePage = (event) => {
     const page = Number(event.target.value);
@@ -38,71 +40,62 @@ function App() {
     setBucketSize(bucket);
   };
   const onSubmitConfig = () => {
-    formData.append("bucketSize", bucketSize);
-    console.log(file)
-    formData.append("pageSize", pageSize);
-    console.log(formData)
-  
-    api.post("start", formData)
-      .then((data) => { 
-        if (data.status === 201) {
-          setInfo((prev) => ({
-            ...prev,
-            pageSize,
-            bucketSize,
-          }));
-          toast.success("Configuração salva", toastConfig);
-        } else {
-          toast.error("Backend offline", toastConfig);
-        }
-      })
-      .catch((error) => {
-        toast.error("Backend offline: " + error, toastConfig);
-      });
-  };
+    api.get("/info").then((data) => {
+      const json = JSON.parse(JSON.stringify(data));
+      console.log(json);
+      const { readSize, bucketNumber } = json.data;
 
-  const onChangeSearch = (event) => {
-    const { value } = event.target;
-    setSearchReg(value);
-  };
-  const onloadFile = (file) => {
-    formData.append("bucketSize", bucketSize);
-    formData.append("pageSize", pageSize);
-    console.log(bucketSize)
-    console.log(pageSize)
-    console.log(formData)
-    formData.append("file", file);
-    console.log(formData)
-    
-    api.post("start", formData).then((data) => {
-      console.log(data)
-        // const {
-        //   bucketSize,
-        //   pageSize,
-        //   readSize,
-        //   colisionCount,
-        //   overflowCount,
-        //   bucketNumber,
-        // } = data.data;
-
-        // setInfo((prev) => ({
-        //   ...prev,
-        //   pageSize,
-        //   bucketSize,
-        //   readSize,
-        //   colisionCount,
-        //   overflowCount,
-        //   bucketNumber,
-        // }));
-
-        // alert("Tabela lida com sucesso");
-      })
-    .catch((error) => {
-      alert("erro" + error);
-      toast.error("Backend offline: " + error, toastConfig);
+      setInfo((prev) => ({
+        ...prev,
+        pageSize: pageSize,
+        bucketSize: bucketSize,
+        readSize,
+        colisionCount: json.data.colisao,
+        overflowCount: json.data.overflow,
+        bucketNumber,
+      }));
     });
   };
 
+  const onloadFile = (file) => {
+    formData.append("bucketSize", bucketSize);
+    formData.append("pageSize", pageSize);
+    console.log(bucketSize);
+    console.log(pageSize);
+    console.log(formData);
+    formData.append("file", file);
+    console.log(formData);
+
+    api
+      .post("start", formData)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        alert("erro" + error);
+        toast.error("Backend offline: " + error, toastConfig);
+      });
+  };
+  const onSearch = () => {
+    console.log(query);
+    api
+      .post("search", { query })
+      .then((data) => {
+        console.log(data);
+        const { cost } = data.data;
+        setInfo((prev) => ({
+          ...prev,
+          cost,
+        }));
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  };
+  const onChangeSearch = (event) => {
+    const { value } = event.target;
+    setquery(value);
+  };
   return (
     <div className="App">
       <section className="container">
@@ -121,24 +114,24 @@ function App() {
               <input type="text" value={bucketSize} onChange={onChangeBucket} />
             </div>
           </div>
-          {/* <button className="config-save-btn" onClick={onSubmitConfig}>
+          <button className="config-save-btn" onClick={onSubmitConfig}>
             Salvar
-          </button> */}
+          </button>
         </div>
         <div className="search-container">
           <input
             className="search-input-btn"
             type="text"
             placeholder="Chave de busca"
-            value={searchReg}
+            value={query}
             onChange={onChangeSearch}
           />
           <button
-            // onClick={}
+            onClick={onSearch}
             className="search-submit-btn"
             value="Buscar"
           >
-            <FaSearch className="search-submit-icon" />
+            Buscar
           </button>
         </div>
         <div className="database-info">
@@ -146,12 +139,12 @@ function App() {
           <InfoNumber title="Tamanho do bucket" number={info.bucketSize} />
           <InfoNumber title="Número de colisões" number={info.colisionCount} />
           <InfoNumber title="Número de overflows" number={info.overflowCount} />
-          <InfoNumber title="Quantidade de registros" number={info.readSize} />
+          {/* <InfoNumber title="Quantidade de registros" number={info.readSize} /> */}
           <InfoNumber title="Custo da leitura" number={info.cost} />
-          <InfoNumber
+          {/* <InfoNumber
             title="Quantidade de buckets"
             number={info.bucketNumber}
-          />
+          /> */}
         </div>
       </section>
     </div>
