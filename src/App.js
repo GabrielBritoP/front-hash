@@ -14,7 +14,6 @@ function App() {
   const [pageSize, setPageSize] = useState(0);
   const [query, setquery] = useState("");
   const [bucketSize, setBucketSize] = useState(0);
-  const [file, setFile] = useState();
   const formData = new FormData();
   const [info, setInfo] = useState({
     readSize: 0,
@@ -79,7 +78,7 @@ function App() {
   const onSearch = () => {
     console.log(query);
     api
-      .post("search", { query })
+      .post("search", { params: { query: query } })
       .then((data) => {
         console.log(data);
         const { cost } = data.data;
