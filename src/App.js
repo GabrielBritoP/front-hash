@@ -77,14 +77,15 @@ function App() {
   };
   const onSearch = () => {
     console.log(query);
+    // http://127.0.0.1:5000/search?query=AAP
     api
-      .post("search", { params: { query: query } })
+      .post(`search?query=${query}`)
       .then((data) => {
         console.log(data);
-        const { cost } = data.data;
+        console.log(data.data.custo);
         setInfo((prev) => ({
           ...prev,
-          cost,
+          cost: data.data.custo,
         }));
       })
       .catch((error) => {
